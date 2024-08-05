@@ -1,12 +1,21 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import CustomLink from "./CustomLink";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdMail } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { mobileBreakPoint } from "../Constants/constants";
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
 
 const FixedPosition = styled.div`
   overflow: hidden;
@@ -23,12 +32,10 @@ const Root = styled.div`
   color: white;
   background: blue;
   padding: 18px 8px;
-  position: relative;
 
   @media (max-width: ${mobileBreakPoint}) {
     width: 100%;
-    justify-content: flex-end;
-    height: 175px;
+    justify-content: flex-end;∂
   }
 `;
 
@@ -50,6 +57,7 @@ const LinkContainer = styled.div`
   display: flex;
   align-items: center;
   margin-right: 14px;
+  cursor: pointer;
 
   &:hover {
     color: #c0c0c0;
@@ -90,22 +98,21 @@ const MobileContent = styled.div`
 `;
 
 const MobileMenuContainer = styled.div`
-  position: absolute;
-  top: 0px;
-  right: 100;
-  z-index: 1;
-  height: 100%;
   background: white;
   color: black;
-  border: 1px solid black;
+  padding: 12px 16px;
+  animation: ${fadeIn} 0.5s ease;
 `;
 
 export default function NavBar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [toggle, setToggle] = useState(false);
 
   const onClickHandler = () => {
     setShowMobileMenu(!showMobileMenu);
+    setToggle(!toggle);
   };
+
   return (
     <FixedPosition>
       <Root>
@@ -114,7 +121,16 @@ export default function NavBar() {
           <LeftSideDesktop>
             <LinkContainer>
               <FaMapMarkerAlt />
-              <span>Lakeway, Texas 78734</span>
+              {/* <span>Lakeway, Texas 78734</span> */}
+              <span>
+                {" "}
+                <CustomLink
+                  href="https://www.google.com/maps/search/google+lakeway+travis/"
+                  target="_blank"
+                >
+                  Lakeway, Texas 78734
+                </CustomLink>
+              </span>
             </LinkContainer>
             <LinkContainer>
               <MdMail />
@@ -140,26 +156,21 @@ export default function NavBar() {
         {/* BEING MOBILE */}
         <MobileContainer>
           <MobileContent>
-            <Image
-              src="/images/logo.png"
-              height={196}
-              width={149}
-              layout="intrinsic"
-            />
             <span onClick={onClickHandler}>
               {" "}
               <GiHamburgerMenu style={{ fontSize: "32px" }} />
             </span>
-            {showMobileMenu && (
-              <MobileMenuContainer onClick={onClickHandler}>
-                <CustomLink href="/">DONATE NOW</CustomLink>
-                <CustomLink href="/">Register</CustomLink>
-                <CustomLink href="/">Login</CustomLink>
-              </MobileMenuContainer>
-            )}
           </MobileContent>
         </MobileContainer>
       </Root>
+      {showMobileMenu && (
+        <MobileMenuContainer onClick={onClickHandler} toggle={toggle}>
+          <CustomLink href="/">DONATE NOW</CustomLink>
+          <CustomLink href="/">Register</CustomLink>
+          <CustomLink href="/">Login</CustomLink>
+        </MobileMenuContainer>
+      )}
+      {/* END MOBILE */}
     </FixedPosition>
   );
 }
